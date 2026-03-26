@@ -18,7 +18,9 @@ function WordleGame() {
   });
 
   useEffect(() => {
-    startNewGame();
+    const controller = new AbortController();
+    startNewGame(controller.signal);
+    return () => controller.abort();
   }, [startNewGame]);
 
   return (
