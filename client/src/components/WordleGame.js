@@ -1,0 +1,109 @@
+import { useEffect, useCallback } from 'react';
+import Board from './Board';
+import OnScreenKeyboard from './OnScreenKeyboard';
+import useGame from '../hooks/useGame';
+import useInput from '../hooks/useInput';
+
+function WordleGame() {
+  const { board, keyboardColors, status, message, showMessage, startNewGame, submitGuess } = useGame();
+
+  const onInvalidLength = useCallback(() => {
+    showMessage('Word must be 5 letters');
+  }, [showMessage]);
+
+  const { currentGuess, handleKey } = useInput({
+    status,
+    onSubmit: submitGuess,
+    onInvalidLength,
+  });
+
+  useEffect(() => {
+    startNewGame();
+  }, [startNewGame]);
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
+      {/* Header — border spans full viewport width */}
+      <div
+        style={{
+          borderBottom: '1px solid #d3d6da',
+          width: '100%',
+          padding: '16px 0',
+          marginBottom: '20px',
+        }}
+      >
+        <h1
+          style={{
+            textAlign: 'center',
+            fontSize: '36px',
+            fontWeight: 'bold',
+            margin: 0,
+            letterSpacing: '0.1em',
+          }}
+        >
+          Wordle
+        </h1>
+      </div>
+
+      {/* Game content area — constrained width, relative for toast positioning */}
+      <div
+        style={{
+          position: 'relative',
+          width: '100%',
+          maxWidth: '500px',
+          padding: '0 16px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
+        {/* Floating toast message */}
+        {message && (
+          <div
+            style={{
+              position: 'absolute',
+              top: '-12px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              backgroundColor: '#000000',
+              color: '#ffffff',
+              padding: '10px 20px',
+              borderRadius: '6px',
+              fontWeight: 'bold',
+              fontSize: '14px',
+              whiteSpace: 'nowrap',
+              zIndex: 10,
+            }}
+          >
+            {message}
+          </div>
+        )}
+
+        <Board board={board} currentGuess={currentGuess} status={status} />
+
+        <OnScreenKeyboard keyboardColors={keyboardColors} onKey={handleKey} />
+
+        {status !== 'playing' && (
+          <button
+            onClick={startNewGame}
+            style={{
+              marginTop: '20px',
+              padding: '12px 28px',
+              fontSize: '16px',
+              fontWeight: 'bold',
+              backgroundColor: '#6aaa64',
+              color: '#ffffff',
+              border: 'none',
+              borderRadius: '6px',
+              cursor: 'pointer',
+            }}
+          >
+            New Game
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export default WordleGame;
