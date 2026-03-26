@@ -2,6 +2,15 @@ import { useState, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 const SHOW_MESSAGE_DURATION_MS = 2000;
+const STORAGE_KEY = 'wordle_game_id';
+
+async function createNewGame() {
+  const res = await fetch('/api/game/new', { method: 'POST' });
+  if (!res.ok) throw new Error('Failed to start game');
+  const data = await res.json();
+  localStorage.setItem(STORAGE_KEY, data.gameId);
+  return data;
+}
 
 function useGame() {
   const queryClient = useQueryClient();
@@ -18,14 +27,26 @@ function useGame() {
   const { data: gameState } = useQuery({
     queryKey: ['game', gameKey],
     queryFn: async () => {
-      const res = await fetch('/api/game/new', { method: 'POST' });
-      return res.json();
+      // On initial load try to restore a saved session from localStorage
+      if (gameKey === 0) {
+        const savedId = localStorage.getItem(STORAGE_KEY);
+        if (savedId) {
+          const res = await fetch(`/api/game/${savedId}`);
+          if (res.ok) {
+            const session = await res.json();
+            // Don't restore a finished game — start a fresh one
+            if (session.status === 'playing') return session;
+          }
+        }
+      }
+      return createNewGame();
     },
     staleTime: Infinity,
     refetchOnWindowFocus: false,
   });
 
   const startNewGame = useCallback(() => {
+    localStorage.removeItem(STORAGE_KEY);
     setGameKey((k) => k + 1);
     setMessage('');
   }, []);
