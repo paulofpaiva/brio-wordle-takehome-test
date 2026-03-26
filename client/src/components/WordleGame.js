@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import Board from './Board';
 import OnScreenKeyboard from './OnScreenKeyboard';
 import useGame from '../hooks/useGame';
@@ -9,13 +9,30 @@ const MAX_ATTEMPTS = 6;
 function WordleGame() {
   const { board, keyboardColors, status, message, attemptsUsed, showMessage, startNewGame, submitGuess } = useGame();
 
+  const [shake, setShake] = useState(false);
+
+  const triggerShake = useCallback(() => {
+    setShake(true);
+    setTimeout(() => setShake(false), 500);
+  }, []);
+
   const onInvalidLength = useCallback(() => {
     showMessage('Word must be 5 letters');
-  }, [showMessage]);
+    triggerShake();
+  }, [showMessage, triggerShake]);
+
+  const handleSubmit = useCallback(
+    async (guess) => {
+      const accepted = await submitGuess(guess);
+      if (!accepted) triggerShake();
+      return accepted;
+    },
+    [submitGuess, triggerShake]
+  );
 
   const { currentGuess, handleKey } = useInput({
     status,
-    onSubmit: submitGuess,
+    onSubmit: handleSubmit,
     onInvalidLength,
   });
 
@@ -89,7 +106,7 @@ function WordleGame() {
           {attemptsUsed}/{MAX_ATTEMPTS}
         </p>
 
-        <Board board={board} currentGuess={currentGuess} status={status} />
+        <Board board={board} currentGuess={currentGuess} status={status} shake={shake} />
 
         <OnScreenKeyboard keyboardColors={keyboardColors} onKey={handleKey} />
 
