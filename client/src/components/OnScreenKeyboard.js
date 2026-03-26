@@ -18,7 +18,7 @@ function Key({ label, feedback, onKey }) {
     <div
       onClick={() => onKey(label)}
       style={{
-        minWidth: isWide ? '65px' : '43px',
+        flex: isWide ? 1.5 : 1,
         height: '58px',
         backgroundColor: colors.background,
         color: colors.color,
@@ -48,8 +48,6 @@ function OnScreenKeyboard({ keyboardColors, onKey }) {
             display: 'flex',
             gap: '6px',
             marginBottom: '8px',
-            justifyContent: 'center',
-            paddingLeft: rowIndex === 1 ? '20px' : '0',
           }}
         >
           {row.map((label) => (

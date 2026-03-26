@@ -3,7 +3,7 @@ import Tile from './Tile';
 const MAX_ROWS = 6;
 const WORD_LENGTH = 5;
 
-function Board({ board, currentGuess, status }) {
+function Board({ board, currentGuess, status, shake }) {
   const rows = [];
 
   for (let i = 0; i < MAX_ROWS; i++) {
@@ -23,6 +23,7 @@ function Board({ board, currentGuess, status }) {
       {rows.map((row, rowIndex) => (
         <div
           key={rowIndex}
+          className={shake && rowIndex === board.length ? 'row-shake' : undefined}
           style={{ display: 'flex', gap: '5px', marginBottom: '5px' }}
         >
           {row.letters.map((letter, colIndex) => (

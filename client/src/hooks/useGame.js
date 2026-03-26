@@ -67,6 +67,7 @@ function useGame() {
     board: gameState?.board ?? [],
     keyboardColors: gameState?.keyboardColors ?? {},
     status: gameState?.status ?? 'playing',
+    attemptsUsed: gameState?.board?.length ?? 0,
     message,
     showMessage,
     startNewGame,
