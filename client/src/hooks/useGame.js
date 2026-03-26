@@ -14,16 +14,17 @@ function useGame() {
     setTimeout(() => setMessage(''), SHOW_MESSAGE_DURATION_MS);
   }, []);
 
-  const startNewGame = useCallback(async () => {
+  const startNewGame = useCallback(async (signal) => {
     try {
-      const res = await fetch('/api/game/new', { method: 'POST' });
+      const res = await fetch('/api/game/new', { method: 'POST', signal });
       const data = await res.json();
       setGameId(data.gameId);
       setBoard([]);
       setKeyboardColors({});
       setStatus('playing');
       setMessage('');
-    } catch {
+    } catch (err) {
+      if (err.name === 'AbortError') return;
       showMessage('Failed to start game. Is the server running?');
     }
   }, [showMessage]);
