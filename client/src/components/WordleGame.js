@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react';
+import { useCallback } from 'react';
 import Board from './Board';
 import OnScreenKeyboard from './OnScreenKeyboard';
 import useGame from '../hooks/useGame';
@@ -16,12 +16,6 @@ function WordleGame() {
     onSubmit: submitGuess,
     onInvalidLength,
   });
-
-  useEffect(() => {
-    const controller = new AbortController();
-    startNewGame(controller.signal);
-    return () => controller.abort();
-  }, [startNewGame]);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
