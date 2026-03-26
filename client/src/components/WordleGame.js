@@ -4,8 +4,10 @@ import OnScreenKeyboard from './OnScreenKeyboard';
 import useGame from '../hooks/useGame';
 import useInput from '../hooks/useInput';
 
+const MAX_ATTEMPTS = 6;
+
 function WordleGame() {
-  const { board, keyboardColors, status, message, showMessage, startNewGame, submitGuess } = useGame();
+  const { board, keyboardColors, status, message, attemptsUsed, showMessage, startNewGame, submitGuess } = useGame();
 
   const onInvalidLength = useCallback(() => {
     showMessage('Word must be 5 letters');
@@ -74,6 +76,18 @@ function WordleGame() {
             {message}
           </div>
         )}
+
+        {/* Attempt counter */}
+        <p
+          style={{
+            fontSize: '13px',
+            color: '#787c7e',
+            margin: '0 0 12px',
+            alignSelf: 'flex-end',
+          }}
+        >
+          {attemptsUsed}/{MAX_ATTEMPTS}
+        </p>
 
         <Board board={board} currentGuess={currentGuess} status={status} />
 
