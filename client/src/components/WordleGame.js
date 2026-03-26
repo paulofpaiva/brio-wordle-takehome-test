@@ -22,7 +22,8 @@ function WordleGame() {
   }, [startNewGame]);
 
   return (
-    <>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
+      {/* Header — border spans full viewport width */}
       <div
         style={{
           borderBottom: '1px solid #d3d6da',
@@ -37,51 +38,71 @@ function WordleGame() {
             fontSize: '36px',
             fontWeight: 'bold',
             margin: 0,
+            letterSpacing: '0.1em',
           }}
         >
           Wordle
         </h1>
       </div>
 
-      {message && (
-        <div
-          style={{
-            backgroundColor: '#000000',
-            color: '#ffffff',
-            padding: '10px 20px',
-            borderRadius: '6px',
-            fontWeight: 'bold',
-            fontSize: '14px',
-            marginBottom: '16px',
-          }}
-        >
-          {message}
-        </div>
-      )}
+      {/* Game content area — constrained width, relative for toast positioning */}
+      <div
+        style={{
+          position: 'relative',
+          width: '100%',
+          maxWidth: '500px',
+          padding: '0 16px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
+        {/* Floating toast message */}
+        {message && (
+          <div
+            style={{
+              position: 'absolute',
+              top: '-12px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              backgroundColor: '#000000',
+              color: '#ffffff',
+              padding: '10px 20px',
+              borderRadius: '6px',
+              fontWeight: 'bold',
+              fontSize: '14px',
+              whiteSpace: 'nowrap',
+              zIndex: 10,
+            }}
+          >
+            {message}
+          </div>
+        )}
 
-      <Board board={board} currentGuess={currentGuess} status={status} />
+        <Board board={board} currentGuess={currentGuess} status={status} />
 
-      <OnScreenKeyboard keyboardColors={keyboardColors} onKey={handleKey} />
+        <OnScreenKeyboard keyboardColors={keyboardColors} onKey={handleKey} />
 
-      {status !== 'playing' && (
-        <button
-          onClick={startNewGame}
-          style={{
-            marginTop: '20px',
-            padding: '12px 28px',
-            fontSize: '16px',
-            fontWeight: 'bold',
-            backgroundColor: '#6aaa64',
-            color: '#ffffff',
-            border: 'none',
-            borderRadius: '6px',
-            cursor: 'pointer',
-          }}
-        >
-          New Game
-        </button>
-      )}
-    </>
+        {status !== 'playing' && (
+          <button
+            onClick={startNewGame}
+            style={{
+              marginTop: '20px',
+              padding: '12px 28px',
+              fontSize: '16px',
+              fontWeight: 'bold',
+              backgroundColor: '#6aaa64',
+              color: '#ffffff',
+              border: 'none',
+              borderRadius: '6px',
+              cursor: 'pointer',
+            }}
+          >
+            New Game
+          </button>
+        )}
+      </div>
+    </div>
   );
 }
 
